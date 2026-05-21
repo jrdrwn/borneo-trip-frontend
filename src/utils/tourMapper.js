@@ -51,11 +51,6 @@ function normalizeImageUrl(value, seed) {
 
   const cleanPath = raw.replace(/^\/+/, "");
 
-  if (cleanPath.startsWith("uploads/")) {
-    const uploadBase = import.meta.env.VITE_UPLOADS_URL || "http://localhost:5000";
-    return `${uploadBase.replace(/\/$/, "")}/${cleanPath}`;
-  }
-
   const apiBase = import.meta.env.VITE_API_URL || "http://localhost:8000";
   return `${apiBase.replace(/\/$/, "")}/${cleanPath}`;
 }
