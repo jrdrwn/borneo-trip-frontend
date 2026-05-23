@@ -1,8 +1,10 @@
 import { Calendar, MapPin, Star } from "lucide-react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 export default function TourCard({ tour }) {
   return (
+    <React.Fragment>
     <article className="tour-card">
       <div className="tour-image-wrap">
         <img
@@ -52,5 +54,6 @@ export default function TourCard({ tour }) {
         </div>
       </div>
     </article>
+    </React.Fragment>
   );
 }
