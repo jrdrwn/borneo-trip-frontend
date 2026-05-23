@@ -1,37 +1,60 @@
-import React from "react";
-import { CalendarDays, Lightbulb } from "lucide-react";
-import { events, tips } from "../data/tourData.js";
+import { CalendarDays } from "lucide-react";
+import { useEffect, useState } from "react";
+import { tips } from "../data/tourData.js";
+import "../styles/eventtips.css";
 
 export default function EventTipsSection() {
+  const [events, setEvents] = useState([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/public/events`);
+        if (!res.ok) throw new Error("Gagal memuat event");
+        const data = await res.json();
+        setEvents(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingEvents(false);
+      }
+    };
+    fetchEvents();
+  }, []);
+
   return (
     <section className="event-tips-section">
-      <div className="container event-tips-grid">
-        <div className="mini-panel event-panel">
-          <div className="panel-title">
-            <CalendarDays size={18} />
-            <h3>Kalender Event</h3>
-          </div>
-
-          {events.map((event) => (
-            <div className="event-item" key={event.title}>
-              <span>{event.date}</span>
-              <div>
-                <strong>{event.title}</strong>
-                <small>{event.place}</small>
-              </div>
+      <div className="container">
+        {/* Kalender Event */}
+        <div className="event-panel">
+          <h3 className="panel-title">Kalender Event</h3>
+          {loadingEvents ? (
+            <p>Memuat event...</p>
+          ) : events.length > 0 ? (
+            <div className="event-grid">
+              {events.map((event, idx) => (
+                <div className="event-box" key={idx}>
+                  <div className="event-date">
+                    <CalendarDays size={14} />
+                    <span>{event.date} {event.time && `(${event.time})`}</span>
+                  </div>
+                  <div className="event-title">{event.title}</div>
+                  <div className="event-place">{event.place}</div>
+                </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <p>Belum ada event tersedia.</p>
+          )}
         </div>
 
-        <div className="mini-panel tips-panel">
-          <div className="panel-title orange">
-            <Lightbulb size={18} />
-            <h3>Tips Berwisata</h3>
-          </div>
-
-          {tips.map((tip, index) => (
-            <div className="tips-item" key={tip}>
-              <span>{index + 1}</span>
+        {/* Tips Berwisata di bawah */}
+        <div className="tips-panel">
+          <h3 className="panel-title orange">Tips Berwisata</h3>
+          {tips.map((tip, idx) => (
+            <div className="tips-item" key={idx}>
+              <span>{idx + 1}</span>
               <p>{tip}</p>
             </div>
           ))}
@@ -40,4 +63,3 @@ export default function EventTipsSection() {
     </section>
   );
 }
-

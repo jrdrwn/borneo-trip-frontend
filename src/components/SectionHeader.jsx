@@ -1,4 +1,3 @@
-import React from "react";
 export default function SectionHeader({ eyebrow, title, desc, align = "center" }) {
   return (
     <div className={`section-header ${align === "left" ? "left" : ""}`}>
@@ -8,4 +7,3 @@ export default function SectionHeader({ eyebrow, title, desc, align = "center" }
     </div>
   );
 }
-
