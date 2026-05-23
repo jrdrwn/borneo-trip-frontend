@@ -10,7 +10,7 @@ export default function EventTipsSection() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/public/events`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/public/events`);
         if (!res.ok) throw new Error("Gagal memuat event");
         const data = await res.json();
         setEvents(data);
