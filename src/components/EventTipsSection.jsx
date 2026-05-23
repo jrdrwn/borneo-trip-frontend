@@ -1,5 +1,5 @@
 import { CalendarDays } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { tips } from "../data/tourData.js";
 import "../styles/eventtips.css";
 
@@ -24,6 +24,7 @@ export default function EventTipsSection() {
   }, []);
 
   return (
+    <React.Fragment>
     <section className="event-tips-section">
       <div className="container">
         {/* Kalender Event */}
@@ -61,5 +62,6 @@ export default function EventTipsSection() {
         </div>
       </div>
     </section>
+    </React.Fragment>
   );
 }
