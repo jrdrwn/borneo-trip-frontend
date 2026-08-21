@@ -44,6 +44,9 @@ export const api = {
 
   getRegions: () => request("/api/public/regions"),
 
+  getEvents: (params = {}) =>
+    request(`/api/public/events${toQueryString(params)}`),
+
   getDestinations: (params = {}) =>
     request(`/api/public/destinations${toQueryString(params)}`),
 
@@ -53,9 +56,12 @@ export const api = {
   getFeaturedRecommendations: (params = {}) =>
     request(`/api/public/recommendations/featured${toQueryString(params)}`),
 
-  askAI: (question) =>
+  askAI: (question, context = null) =>
     request("/api/qa/ask", {
       method: "POST",
-      body: JSON.stringify({ question })
+      body: JSON.stringify({
+        question,
+        context
+      })
     })
 };

@@ -1,0 +1,378 @@
+/* BorneoTrip Visual Hotfix v2
+   Diimpor setelah stylesheet lama agar selector generik lama tidak merusak badge. */
+
+.tour-grid {
+  align-items: stretch;
+}
+
+.tour-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(18, 74, 59, 0.12);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(22, 59, 49, 0.07);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.tour-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 137, 105, 0.24);
+  box-shadow: 0 18px 38px rgba(22, 59, 49, 0.12);
+}
+
+.tour-card .tour-image-wrap {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #dceee7, #edf7f3);
+}
+
+.tour-card .tour-image-wrap > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 300ms ease;
+}
+
+.tour-card:hover .tour-image-wrap > img {
+  transform: scale(1.025);
+}
+
+.tour-card .tour-image-wrap.category-visual > img {
+  filter: saturate(0.94) contrast(0.98) brightness(0.96);
+}
+
+.tour-card .tour-image-shade,
+.detail-image .detail-image-shade {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(5, 34, 27, 0.01) 55%, rgba(5, 34, 27, 0.26) 100%);
+}
+
+/* Menggunakan DIV, bukan SPAN, agar tidak terkena selector lama .tour-image-wrap span. */
+.tour-card .tour-image-wrap > .tour-category-badge {
+  position: absolute;
+  z-index: 3;
+  top: 12px;
+  right: auto;
+  bottom: auto;
+  left: 12px;
+  display: block;
+  width: auto;
+  max-width: calc(100% - 24px);
+  height: auto;
+  padding: 6px 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 999px;
+  background: rgba(235, 255, 247, 0.94);
+  color: #00694f;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  backdrop-filter: blur(7px);
+}
+
+.tour-image-empty,
+.detail-image-empty {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.5), transparent 28%),
+    linear-gradient(135deg, #d9eee6, #edf7f3);
+  color: #3f7161;
+  text-align: center;
+}
+
+.tour-image-empty span {
+  position: static !important;
+  inset: auto !important;
+  display: inline !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: inherit !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+.tour-card .tour-card-body {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.tour-card .tour-card-body h3 {
+  display: -webkit-box;
+  min-height: 45px;
+  margin: 0 0 8px;
+  overflow: hidden;
+  color: #132821;
+  font-size: 17px;
+  line-height: 1.32;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.tour-card .tour-location {
+  display: flex;
+  min-height: 21px;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 0 0 7px !important;
+  color: #6d7f79 !important;
+}
+
+.tour-card .tour-location svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.tour-card .tour-description {
+  display: -webkit-box;
+  min-height: 63px;
+  margin: 0 !important;
+  overflow: hidden;
+  color: #65756f !important;
+  line-height: 1.5 !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.tour-card .tour-card-footer {
+  margin-top: auto;
+  padding-top: 13px;
+}
+
+.tour-card .tour-rating.rating-empty {
+  color: #8a9893;
+  font-size: 12px;
+}
+
+.tour-card .tour-card-footer a {
+  padding: 7px 10px;
+  border-radius: 9px;
+  background: #eaf8f3;
+  text-decoration: none;
+}
+
+.detail-image {
+  min-height: 330px;
+  background: linear-gradient(135deg, #dceee7, #edf7f3);
+}
+
+.detail-image > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-image.category-visual > img {
+  filter: saturate(0.94) contrast(0.98) brightness(0.96);
+}
+
+/* Menggunakan DIV agar tidak terkena selector lama .detail-image span. */
+.detail-image > .detail-category-badge {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  right: 14px;
+  bottom: auto;
+  left: auto;
+  display: block;
+  width: auto;
+  height: auto;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #ff8228;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.detail-image > .detail-visual-badge {
+  position: absolute;
+  z-index: 3;
+  top: auto;
+  right: 14px;
+  bottom: 14px;
+  left: auto;
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(16, 32, 28, 0.8);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1.2;
+  backdrop-filter: blur(8px);
+}
+
+.detail-image-empty {
+  min-height: 330px;
+  padding: 26px;
+}
+
+.detail-image-empty strong {
+  color: #285847;
+  font-size: 17px;
+}
+
+.detail-image-empty span {
+  position: static !important;
+  inset: auto !important;
+  max-width: 270px;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #607c72 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.5;
+}
+
+.visual-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 4px 0;
+  color: #6c7c76;
+  font-size: 12.5px;
+}
+
+.image-attribution-compact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 13px;
+  padding: 11px 13px;
+  border: 1px solid rgba(18, 74, 59, 0.12);
+  border-radius: 13px;
+  background: #f7faf9;
+  color: #63736d;
+  font-size: 12px;
+}
+
+.image-attribution-compact div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.image-attribution-compact strong {
+  color: #243b34;
+}
+
+.image-attribution-compact a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #007d60;
+  font-weight: 800;
+}
+
+.gallery-panel {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.gallery-item {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 15px;
+  background: #edf4f1;
+}
+
+.gallery-item img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+@media (max-width: 720px) {
+  .tour-card .tour-image-wrap {
+    height: 210px;
+  }
+
+  .detail-image,
+  .detail-image-empty {
+    min-height: 260px;
+  }
+}
+
+/* Google Places gallery */
+.detail-google-badge {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(20, 32, 28, 0.86);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  backdrop-filter: blur(6px);
+}
+
+.image-attribution-compact small {
+  color: #71817b;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.gallery-item figcaption {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #f7faf9;
+  color: #51645d;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.gallery-item figcaption span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.gallery-item figcaption a {
+  color: #007d60;
+  font-weight: 800;
+}
+
+.gallery-item figcaption small {
+  flex: 0 0 auto;
+  color: #7b8c86;
+  text-align: right;
+}

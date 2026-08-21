@@ -313,28 +313,3 @@
   .tour-grid, .category-grid, .ai-feature-row { grid-template-columns: 1fr; }
   .hero-overlay { width: min(100% - 20px, 1000px); min-height: 390px; }
 }
-
-/* Multi-source image status */
-.tour-image-wrap .tour-category-badge {
-  left: 12px;
-  right: auto;
-  top: 12px;
-}
-
-.tour-image-wrap .tour-image-status-badge {
-  position: absolute;
-  left: auto;
-  right: 12px;
-  top: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  max-width: calc(100% - 150px);
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(31, 41, 55, 0.88);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 900;
-  backdrop-filter: blur(5px);
-}

@@ -1,59 +1,79 @@
-import { Calendar, MapPin, Star } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { ImageOff, MapPin, Star } from "lucide-react";
 
 export default function TourCard({ tour }) {
+  const [imageSrc, setImageSrc] = useState(tour.image || tour.fallbackImage || "");
+  const [usingFallback, setUsingFallback] = useState(!tour.hasDestinationPhoto);
+  const [imageUnavailable, setImageUnavailable] = useState(false);
+
+  useEffect(() => {
+    setImageSrc(tour.image || tour.fallbackImage || "");
+    setUsingFallback(!tour.hasDestinationPhoto);
+    setImageUnavailable(false);
+  }, [tour.image, tour.fallbackImage, tour.hasDestinationPhoto]);
+
+  const handleImageError = () => {
+    if (!usingFallback && tour.fallbackImage) {
+      setImageSrc(tour.fallbackImage);
+      setUsingFallback(true);
+      return;
+    }
+
+    setImageSrc("");
+    setUsingFallback(true);
+    setImageUnavailable(true);
+  };
+
+  const hasNumericRating = typeof tour.rating === "number";
+
   return (
-    <React.Fragment>
     <article className="tour-card">
-      <div className="tour-image-wrap">
-        <img
-          src={tour.image || "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"}
-          alt={tour.title}
-          loading="lazy"
-          onError={(event) => {
-            event.currentTarget.src =
-              "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
-          }}
-        />
-        {tour.badge && <span>{tour.badge}</span>}
+      <div className={`tour-image-wrap ${usingFallback ? "category-visual" : ""}`}>
+        {!imageUnavailable && imageSrc ? (
+          <img
+            src={imageSrc}
+            alt={usingFallback ? `Visual kategori ${tour.category}` : `Foto ${tour.title}`}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            onError={handleImageError}
+          />
+        ) : (
+          <div className="tour-image-empty" role="img" aria-label={`Foto ${tour.title} belum tersedia`}>
+            <ImageOff size={28} />
+            <span>Foto belum tersedia</span>
+          </div>
+        )}
+
+        <div className="tour-image-shade" aria-hidden="true" />
+        {tour.badge && <div className="tour-category-badge">{tour.badge}</div>}
       </div>
 
       <div className="tour-card-body">
-        <h3>{tour.title}</h3>
-
-        {tour.date && (
-          <p className="tour-date">
-            <Calendar size={14} />
-            {tour.date} {tour.time && `(${tour.time})`}
-          </p>
-        )}
+        <h3 title={tour.title}>{tour.title}</h3>
 
         {tour.location && (
           <p className="tour-location">
-            <MapPin size={14} />
-            {tour.location || tour.place}
+            <MapPin size={15} />
+            <span>{tour.location}</span>
           </p>
         )}
 
-        {tour.shortDesc && <p>{tour.shortDesc || tour.description}</p>}
+        {tour.shortDesc && <p className="tour-description">{tour.shortDesc}</p>}
 
         <div className="tour-card-footer">
-          {tour.rating && (
-            <div className="tour-rating">
-              <Star size={14} fill="currentColor" />
-              {tour.rating}
-            </div>
-          )}
+          <div className={`tour-rating ${hasNumericRating ? "" : "rating-empty"}`}>
+            <Star size={15} fill={hasNumericRating ? "currentColor" : "none"} />
+            {hasNumericRating ? tour.rating : "Belum dinilai"}
+          </div>
 
           {tour.slug && (
             <Link to={`/wisata/${encodeURIComponent(tour.slug)}`}>
-              Detail
+              Lihat detail
             </Link>
           )}
         </div>
       </div>
     </article>
-    </React.Fragment>
   );
 }

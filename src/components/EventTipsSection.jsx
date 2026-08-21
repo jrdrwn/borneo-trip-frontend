@@ -1,7 +1,8 @@
+import React, { useState, useEffect } from "react";
 import { CalendarDays } from "lucide-react";
-import React, { useEffect, useState } from "react";
 import { tips } from "../data/tourData.js";
 import "../styles/eventtips.css";
+import { api } from "../services/api.js";
 
 export default function EventTipsSection() {
   const [events, setEvents] = useState([]);
@@ -10,21 +11,31 @@ export default function EventTipsSection() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/public/events`);
-        if (!res.ok) throw new Error("Gagal memuat event");
-        const data = await res.json();
-        setEvents(data);
-      } catch (err) {
-        console.error(err);
+        const response = await api.getEvents({
+          limit: 6
+        });
+
+        setEvents(
+          Array.isArray(response?.data)
+            ? response.data
+            : []
+        );
+      } catch (error) {
+        console.error(
+          "Gagal memuat event:",
+          error
+        );
+
+        setEvents([]);
       } finally {
         setLoadingEvents(false);
       }
     };
+
     fetchEvents();
   }, []);
 
   return (
-    <React.Fragment>
     <section className="event-tips-section">
       <div className="container">
         {/* Kalender Event */}
@@ -35,13 +46,16 @@ export default function EventTipsSection() {
           ) : events.length > 0 ? (
             <div className="event-grid">
               {events.map((event, idx) => (
-                <div className="event-box" key={idx}>
+                <div className="event-box"key={event.slug || idx}>
                   <div className="event-date">
                     <CalendarDays size={14} />
                     <span>{event.date} {event.time && `(${event.time})`}</span>
                   </div>
                   <div className="event-title">{event.title}</div>
-                  <div className="event-place">{event.place}</div>
+                  <div className="event-place">{event.place || event.locations 
+                  ?.map((location) => location.nama) .filter(Boolean) 
+                  .join(", ") || "Lokasi belum tersedia"}
+                </div>
                 </div>
               ))}
             </div>
@@ -62,6 +76,5 @@ export default function EventTipsSection() {
         </div>
       </div>
     </section>
-    </React.Fragment>
   );
 }

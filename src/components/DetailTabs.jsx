@@ -1,62 +1,130 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ExternalLink, Image, Map, MessageSquareText, Star } from "lucide-react";
 
+function GalleryImage({ src, title, index, attribution, source }) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) return null;
+
+  return (
+    <figure className="gallery-item">
+      <img
+        src={src}
+        alt={`Foto ${title} ${index + 1}`}
+        loading="lazy"
+        referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
+      />
+
+      {(attribution?.name || source) && (
+        <figcaption>
+          <span>
+            {attribution?.url ? (
+              <a href={attribution.url} target="_blank" rel="noreferrer">
+                {attribution.name || "Kontributor Google"}
+              </a>
+            ) : (
+              attribution?.name || "Sumber foto"
+            )}
+          </span>
+          {source && <small>{source}</small>}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
 export default function DetailTabs({ tour }) {
-  const [active, setActive] = useState("gallery");
-  const gallery = Array.isArray(tour.gallery) && tour.gallery.length ? tour.gallery : [tour.image];
+  const gallery = useMemo(
+    () => (Array.isArray(tour.gallery) ? tour.gallery.filter(Boolean) : []),
+    [tour.gallery]
+  );
+  const galleryAttributions = Array.isArray(tour.galleryAttributions)
+    ? tour.galleryAttributions
+    : [];
+  const hasGallery = gallery.length > 0;
+  const [active, setActive] = useState(hasGallery ? "gallery" : "location");
   const reviews = Array.isArray(tour.reviews) ? tour.reviews : [];
+
+  useEffect(() => {
+    setActive(hasGallery ? "gallery" : "location");
+  }, [hasGallery, tour.id]);
 
   return (
     <section className="detail-tabs-card">
       <div className="detail-tabs">
-        <button className={active === "gallery" ? "active" : ""} onClick={() => setActive("gallery")}>
-          <Image size={16} />Galeri Foto
+        {hasGallery && (
+          <button
+            className={active === "gallery" ? "active" : ""}
+            onClick={() => setActive("gallery")}
+          >
+            <Image size={16} /> Galeri Foto
+          </button>
+        )}
+
+        <button
+          className={active === "location" ? "active" : ""}
+          onClick={() => setActive("location")}
+        >
+          <Map size={16} /> Lokasi & Peta
         </button>
 
-        <button className={active === "location" ? "active" : ""} onClick={() => setActive("location")}>
-          <Map size={16} />Lokasi & Peta
-        </button>
-
-        <button className={active === "review" ? "active" : ""} onClick={() => setActive("review")}>
-          <MessageSquareText size={16} />Rating & Ulasan
+        <button
+          className={active === "review" ? "active" : ""}
+          onClick={() => setActive("review")}
+        >
+          <MessageSquareText size={16} /> Rating & Ulasan
         </button>
       </div>
 
-      {active === "gallery" && (
+      {active === "gallery" && hasGallery && (
         <div className="gallery-panel">
           {gallery.map((image, index) => (
-            <img key={`${image}-${index}`} src={image} alt={tour.title} />
+            <GalleryImage
+              key={`${image}-${index}`}
+              src={image}
+              title={tour.title}
+              index={index}
+              attribution={galleryAttributions[index]}
+              source={tour.isGooglePlacesPhoto ? tour.imageSource : ""}
+            />
           ))}
         </div>
       )}
 
       {active === "location" && (
         <div className="location-panel">
-       <a
-  className="map-placeholder map-clickable"
-  href={
-    tour?.latitude && tour?.longitude
-      ? `https://www.google.com/maps?q=${tour.latitude},${tour.longitude}`
-      : tour?.url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(tour?.title || tour?.nama || "")}`
-  }
-  target="_blank"
-  rel="noopener noreferrer"
-  title="Buka lokasi di Google Maps"
->
-  <Map size={38} />
-  <span>Peta Area Wisata</span>
-  <small>Klik untuk membuka Google Maps</small>
-</a>
+          <a
+            className="map-placeholder map-clickable"
+            href={
+              tour?.latitude && tour?.longitude
+                ? `https://www.google.com/maps?q=${tour.latitude},${tour.longitude}`
+                : tour?.url && tour.url !== "Belum ada informasi tautan"
+                  ? tour.url
+                  : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(tour?.title || "")}`
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Buka lokasi di Google Maps"
+          >
+            <Map size={38} />
+            <span>Buka lokasi di Google Maps</span>
+            <small>Tidak memerlukan API key</small>
+          </a>
 
           <h3>Detail Lokasi</h3>
           <p>{tour.mapNote}</p>
           {tour.latitude && tour.longitude && (
             <p>Koordinat: {tour.latitude}, {tour.longitude}</p>
           )}
-          {tour.url && tour.url !== "-" && (
-            <a className="primary-btn map-link" href={tour.url} target="_blank" rel="noreferrer">
-              <ExternalLink size={16} /> Buka Link Lokasi
+          {tour.url && tour.url !== "Belum ada informasi tautan" && (
+            <a
+              className="primary-btn map-link"
+              href={tour.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <ExternalLink size={16} /> Buka tautan lokasi
             </a>
           )}
         </div>
@@ -68,11 +136,9 @@ export default function DetailTabs({ tour }) {
             <div>
               <strong>{tour.rating}</strong>
               <span>
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
+                {[1, 2, 3, 4, 5].map((item) => (
+                  <Star key={item} size={16} fill="currentColor" />
+                ))}
               </span>
               <small>Berdasarkan {tour.reviewCount} ulasan</small>
             </div>
@@ -96,8 +162,8 @@ export default function DetailTabs({ tour }) {
 
           {reviews.length > 0 ? (
             <div className="review-list">
-              {reviews.map((review) => (
-                <article key={review.name}>
+              {reviews.map((review, index) => (
+                <article key={`${review.name || "review"}-${index}`}>
                   <div>
                     <strong>{review.name}</strong>
                     <span>{"★".repeat(review.rating)}</span>
@@ -114,4 +180,3 @@ export default function DetailTabs({ tour }) {
     </section>
   );
 }
-
